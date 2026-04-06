@@ -1,0 +1,35 @@
+[workspace]
+name = "QuantumTomographyProject"
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[system-requirements]
+cuda = "12"
+
+[tasks]
+
+[dependencies]
+python = "3.11.*"
+jax = "*"
+jaxlib = "*"
+numpy = "*"
+scipy = "*"
+matplotlib = "*"
+seaborn = "*"
+tqdm = "*"
+pyparsing = "*"
+scikit-learn = "*"
+opencv = "*"
+equinox = "*"
+optax = "*"
+diffrax = "*"
+jaxopt = "*"
+distrax = "*"
+notebook = "*"
+pip = "*"
+
+[pypi-dependencies]
+dm-haiku = "*"
+qutip = "*"
+tensorflow = "*"

@@ -1,0 +1,389 @@
+from functools import partial
+import jax.numpy as jnp
+import jax.nn as nn
+import haiku as hk
+from jax import random
+import flows
+from .flow_util import AffineCouplingSplit, Flow, Loop,Diagonal, RandomShift,ResNet, Shift
+import jax
+from jax.random import PRNGKey,normal,split
+from jax import jit,vmap
+from jax.example_libraries import stax
+import jax.numpy as jnp
+import jax.nn as nn
+import haiku as hk
+import math
+from random import randint
+from functools import partial
+import flows
+import diffrax
+from diffrax import RecursiveCheckpointAdjoint,BacksolveAdjoint
+from .flow_util import Flow, ResNet,Diagonal
+import jax
+from jax.random import PRNGKey,normal,uniform,split
+from jax import jit,grad,vmap,jacfwd,jacrev
+from jax.example_libraries import stax
+from jax.scipy.optimize import minimize
+import jax.numpy as jnp
+import jax.nn as nn
+import haiku as hk
+from jaxopt import LBFGS
+import math
+from random import randint
+from functools import partial
+import flows
+import diffrax
+from diffrax import RecursiveCheckpointAdjoint,BacksolveAdjoint
+from Q_flows.affine import transform_init
+from .flow_util import Loop, ResNet,Diagonal,Flow, Shift
+from jax.experimental.ode import odeint
+from jax.random import normal
+import jax.numpy as jnp
+import math
+from jax.experimental.host_callback import id_print
+import math
+import jax
+from jax.random import split,normal,categorical,uniform,PRNGKey
+from jax import nn, vmap
+import jax.numpy as jnp
+from jax.lax import scan
+import haiku as hk
+from jax.flatten_util import ravel_pytree
+from jax.nn import softplus
+from jax.scipy.special import logsumexp
+import flows
+from functools import partial
+from jax.example_libraries import stax
+import jax.numpy as jnp
+import jax.nn as nn
+import flows
+from .flow_util import Loop,Diagonal
+import math
+import jax
+from jax import jit,vmap
+from jax.random import split,normal,uniform,PRNGKey
+import jax.numpy as jnp
+from jax.lax import fori_loop,scan,cond
+import haiku as hk
+from jax.flatten_util import ravel_pytree
+from functools import partial
+import jax.numpy as jnp
+import jax.nn as nn
+import haiku as hk
+from jax import random
+import flows
+from .flow_util import AffineCouplingSplit, Flow, Loop, Diagonal, ResNet, Shift
+import distrax
+import cmath
+import pickle
+import numpy as np
+from qutip import fock, coherent, coherent_dm, expect, Qobj, fidelity
+from qutip.wigner import wigner, qfunc
+from qutip.visualization import hinton
+import tensorflow as tf
+from tqdm.auto import tqdm
+from qst_cgan.ops import convert_to_real_ops, batched_expect, tf_fidelity
+from qst_cgan.gan import generator_loss, discriminator_loss, Generator, Discriminator
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+from dataclasses import dataclass
+import argparse
+import math
+import abc
+from typing import Callable
+from jax.random import PRNGKey
+import jax.numpy as jnp
+from distributions.distribution import Distribution
+import equinox as eqx
+from Q_flows.mcmc import mcmc_sample
+        from plotting import plot_Q
+import math
+from jax import numpy as jnp
+import jax
+import cmath
+import numpy as np
+from distributions.Q_function import JaxQ
+from typing import Callable
+from jax.random import split, PRNGKey
+from jax import nn
+import jax.numpy as jnp
+from distributions.distribution import Distribution
+from pyparsing import Any
+from Q_flows.mcmc import mcmc_sample
+import equinox as eqx
+import abc
+        from plotting import plot_W
+import math
+from typing import Any
+from jax import numpy as jnp
+from jax import jit
+import jax
+import cmath
+from jax import random
+import numpy as np
+from Q_flows.mcmc import mcmc_sample
+from distributions.Q_targets import get_coherent_state
+from distributions.W_function import JaxWigner, Wigner
+import equinox as eqx
+import abc
+import pickle
+import jax
+import jax.numpy as jnp
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+import numpy as np
+from matplotlib.colors import LinearSegmentedColormap
+import seaborn as sns
+from jax.random import PRNGKey,uniform,split
+from os.path import exists
+from Q_flows.continuous import get_FFJORD
+from Q_flows.flow_util import FFJORDNet, sine
+from distributions.Q_function import Q, QFlow
+from distributions.Q_targets import Q_BEC, Q_GKP, Q_Binomial, Q_CatState, Q_Num
+from distributions.W_function import QWigner, Wigner
+from distributions.W_targets import W_GKP, W_Binomial, W_CatState, W_Num, W_n_particle
+from flow_IO import load_params
+import matplotlib.pyplot as plt
+import pickle
+import numpy as np
+import pickle
+import jax
+import jax.numpy as jnp
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from jax.random import PRNGKey,uniform,split
+from os.path import exists
+import seaborn as sns
+import numpy as np
+from Q_flows.continuous import get_FFJORD
+from Q_flows.flow_util import FFJORDNet, sine
+from distributions.Q_function import Q, QFlow
+from distributions.Q_targets import Q_BEC, Q_GKP, Q_Binomial, Q_CatState, Q_Num
+from distributions.W_function import QWigner, Wigner
+from distributions.W_targets import W_GKP, W_Binomial, W_CatState, W_Num, W_n_particle
+from flow_IO import load_params
+import pickle
+import random
+from matplotlib.colors import LinearSegmentedColormap
+import jax.numpy as jnp
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+import jax
+from jax.random import PRNGKey,uniform,split, normal
+import seaborn as sns
+from os.path import exists
+from Q_flows.continuous import get_FFJORD
+from Q_flows.flow_util import FFJORDNet, sine
+from distributions.Q_function import Q, QFlow
+from distributions.Q_targets import Q_BEC, Q_GKP, Q_Binomial, Q_CatState, Q_Num, Q_Rotation, Q_Tensor_Product
+from distributions.W_function import QWigner, Wigner
+from distributions.W_targets import W_GKP, W_Binomial, W_CatState, W_Num, W_n_particle
+from flow_IO import load_params
+import pickle
+import random
+from matplotlib.colors import LinearSegmentedColormap
+import jax.numpy as jnp
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+import jax
+from jax.random import PRNGKey,uniform,split, normal
+import seaborn as sns
+from os.path import exists
+from Q_flows.continuous import get_FFJORD
+from Q_flows.flow_util import FFJORDNet, sine
+from distributions.Q_function import Q, QFlow
+from distributions.Q_targets import Q_BEC, Q_GKP, Q_Binomial, Q_CatState, Q_Num, Q_Rotation, Q_Tensor_Product
+from distributions.W_function import QWigner, Wigner
+from distributions.W_targets import W_GKP, W_Binomial, W_CatState, W_Num, W_n_particle
+from flow_IO import load_params
+import pickle
+import random
+from matplotlib.colors import LinearSegmentedColormap
+import jax.numpy as jnp
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+import jax
+from jax.random import PRNGKey,uniform,split, normal
+import numpy as np
+import seaborn as sns
+from os.path import exists
+from Q_flows.continuous import get_FFJORD
+from Q_flows.flow_util import FFJORDNet, sine
+from distributions.Q_function import Q, QFlow
+from distributions.Q_targets import Q_BEC, Q_GKP, Q_Binomial, Q_CatState, Q_Num, Q_Rotation, Q_Tensor_Product
+from distributions.W_function import QWigner, Wigner
+from distributions.W_targets import W_GKP, W_Binomial, W_CatState, W_Num, W_Tensor_Product, W_n_particle
+from flow_IO import load_params
+from plotting import plot_Q_2dim
+import pickle
+import random
+import jax.numpy as jnp
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from jax.random import PRNGKey,uniform,split, normal
+from os.path import exists
+from Q_flows.continuous import get_FFJORD
+from Q_flows.flow_util import FFJORDNet, sine
+from distributions.Q_function import Q, QFlow
+from distributions.Q_targets import Q_BEC, Q_GKP, Q_Binomial, Q_CatState, Q_Num, Q_Tensor_Product
+from distributions.W_function import QWigner, Wigner
+from distributions.W_targets import W_GKP, W_Binomial, W_CatState, W_Num, W_n_particle
+from flow_IO import load_params
+import jax.numpy as jnp
+from jax.tree_util import tree_map
+import pickle
+import numpy as np
+import os
+import sys
+from .bijections import *
+from .distributions import *
+from .bijections import *
+from .made import *
+import jax.numpy as np
+import jax.scipy.special as spys
+from jax import random, scipy
+from jax.nn.initializers import orthogonal
+from jax.scipy import linalg
+import jax
+import jax.numpy as np
+from jax import random
+import jax.numpy as np
+from jax import random
+from jax.scipy.special import logsumexp
+from jax.scipy.stats import norm, multivariate_normal
+from setuptools import setup, find_packages
+import unittest
+import jax.numpy as np
+from jax import random
+from jax.experimental import stax
+import flows
+import unittest
+import jax.numpy as np
+from jax import random
+from jax.scipy.stats import multivariate_normal
+from sklearn import datasets, mixture
+import flows
+import jax.numpy as jnp
+from jax.lax import stop_gradient
+from jax.random import split, PRNGKey
+from losses.base_loss import Loss
+from training_sampler import SampleEfficientSampler, SampleFromDistribution, SampleShufflerFromDistribution
+from distributions.Q_function import JaxQ
+from distributions.W_function import JaxWigner
+import equinox as eqx
+import jax.numpy as jnp
+from jax.lax import stop_gradient
+from jax.random import split, PRNGKey
+from losses.base_loss import Loss
+from training_sampler import SampleFromDistribution, SampleShufflerFromDistribution
+from distributions.Q_function import JaxQ
+from distributions.W_function import JaxWigner
+import equinox as eqx
+import jax
+import jax.numpy as jnp
+from jax.lax import stop_gradient
+from losses.base_loss import Loss
+from training_sampler import SampleFromDistribution, SampleShufflerFromDistribution
+from distributions.Q_function import JaxQ
+from distributions.W_function import JaxWigner
+import equinox as eqx
+from functools import partial
+import jax
+import jax.numpy as jnp
+from jax.lax import stop_gradient
+from jax.debug import print as id_print
+from losses.base_loss import Loss
+from training_sampler import SampleEfficientSampler, SampleFromDistribution, SampleShufflerFromDistribution
+from distributions.Q_function import JaxQ
+from distributions.W_function import JaxWigner
+import equinox as eqx
+import abc
+import equinox as eqx
+from distributions.distribution import Distribution
+from training_sampler import Sampler
+import equinox as eqx
+from jax.random import split, permutation
+from abc import ABC, abstractmethod
+import optax
+from losses.base_loss import Loss
+import jax
+from parse_args import parse_args
+from training_setup.setup import setup
+import argparse
+from itertools import product
+import jax.numpy as jnp
+from jax.random import split
+from jax import jit
+from jax.experimental.host_callback import id_print
+from functools import partial
+import pickle
+import jax.numpy as jnp
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from jax.random import PRNGKey,uniform,split
+from os.path import exists
+from distributions.W_function import QWigner, Wigner
+from distributions.W_targets import W_Tensor_Product
+from jax.config import config
+from parse_args import parse_args
+from training_setup.setup import sample_complexity_setup, setup
+from parse_args import parse_args
+from training_setup.loss_setup import Q_loss_init, W_loss_init
+from training_setup.setup import setup_model_and_filename
+from itertools import product
+import pickle
+import jax
+from jax import random
+import traceback
+from video import figures_to_video
+import optax
+from matplotlib import pyplot as plt
+import time
+import os
+from flow_IO import save_params
+import math
+from typing import Callable
+import equinox as eqx
+import jax.numpy as jnp
+from jax.random import split, permutation, choice
+from abc import ABC, abstractmethod
+from jax.scipy.special import logsumexp
+import math
+import jax
+from jax import numpy as jnp
+import numpy as np
+from distributions.Q_targets import Q_BEC, NoisyQ, Q_Binomial, Q_Coherent, Q_CatState, Q_GKP, Q_Num, Q_PureState, Q_Rotation, Q_Tensor_Product, Q_WState
+from distributions.W_targets import W_GKP, NoisyW, W_Binomial, W_CatState, W_Num, W_Rotation, W_Tensor_Product, W_n_particle
+import jax
+from jax import random
+from Q_flows.convex_potential import get_CPF
+from Q_flows.flow_util import FFJORDNet, ResNet, flow_mixture, sine
+from distributions.W_function import QWigner
+from distributions.Q_function import QFlow
+from Q_flows.affine import get_realNVP
+from Q_flows.continuous import get_FFJORD
+import jax
+from jax import random
+import jax.numpy as jnp
+import numpy as np
+from losses.Q_KL import KL_sample_efficient, KL_sample_model_control_variance, KL_sample_model_reparam, KL_sample_target, KL_sample_uniform
+from losses.Q_KL_rev import KL_rev_sample_target, KL_rev_sample_model_reparam, KL_rev_sample_model_control_variance, KL_rev_sample_uniform
+from losses.W_loss import W_L1_sample_efficient, W_L1_sample_model, W_L1_sample_target, W_L1_sample_uniform
+from losses.multiple_loss import MultipleLoss
+from losses.Q_L1 import L1_sample_model_control_variance, L1_sample_model_reparam, L1_sample_target, L1_sample_uniform
+import os
+import pickle
+from jax import random
+from jax import numpy as jnp
+import jax
+from matplotlib import pyplot as plt
+import numpy as np
+from plotting import plot_complexity_losses
+from training_setup.distribution_setup import Q_distribution_init, W_distribution_init, distribution_name_init
+from training_setup.flow_setup import Q_flow_setup, W_flow_setup, flow_init, flow_name_init
+from training_setup.loss_setup import Q_loss_init, W_loss_init, loss_name_init
+from training import train
+import cv2
+import os
+import shutil
+import argparse

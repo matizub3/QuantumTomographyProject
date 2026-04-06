@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual/env stuff
+.venv/
+venv/
+env/
+.pixi/
+.conda/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# Logs and temporary outputs
+logs/
+*.out
+
+# Generated training artifacts
+flow_params/
+loss_evolution_results/
+plots/
+paper_figures/*.pdf
+paper_figures/*.png
+
+# Large data / binary artifacts
+*.mp4
+*.gif
+*.flow
+*.dat
+*.npy
+*.npz
+*.pkl
+
+# LaTeX build junk
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz

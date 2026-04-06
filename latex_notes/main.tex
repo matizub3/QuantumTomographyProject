@@ -1,0 +1,127 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proof}{Proof}
+
+\title{Wigner Tomography}
+\date{March 2023}
+
+\begin{document}
+
+\maketitle
+
+\section{Notation}
+
+The Wigner function is a function $W$ satisfying $\int W = 1$. $W$ does not have to be positive. $|W|$ can be treated as an unnormalized probability distribution. Defining \[\widetilde{W} = \frac{W}{\int |W|},\] we have that $|\widetilde{W}|$ is a normalized probability distribution. Further, let $Z_W = \int |W|$.
+
+Another constraint on $W$ is that $2\pi\int W^2 = 1$. We do not make extensive use of this condition, although it would be interesting to consider how to incorporate it.
+
+\section{Approach 1}
+
+\begin{theorem}
+    We can express an arbitrary $W$ as \[W = (\lambda+1)Q_1-\lambda Q_2\] for some arbitrary normalized probability distributions $Q_1$ and $Q_2$.
+\end{theorem}\textbf{Proof}: Let $W$ be an arbitrary Wigner function. Let $P_1 = \max(W,0)$ and $P_2 = \max(-W,0)$. By definition, $P_1$ and $P_2$ are positive and $\int P_1 = \int P_2 + 1$. Now, let \[Q_1 = \frac{P_1}{\int P_1}\] and \[Q_2 = \frac{P_2}{\int P_2},\] and let $\lambda = \int P_2$. We have that \begin{align*}
+    (\lambda + 1) Q_1 - \lambda Q_2=&\left(\int P_2 + 1\right) Q_1 - Q_2 \int P_2\\
+    =&Q_1\int P_1 - Q_2 \int P_2\\
+    =&P_1 - P_2\\
+    =&\max(W,0) - \max(-W,0)\\
+    =&W,
+\end{align*} as desired.
+
+Note: We may still want a stronger proof that if $W$ is infinitely differentiable we can find $Q_1$ and $Q_2$ that are infinitely differentiable.
+
+When fitting a Wigner function $W_\theta = (\lambda+1)Q_1-\lambda Q_2$, one possible loss function is the $L_1$ loss \begin{align*}
+    L_1[W_\theta,W] &= \int |W_\theta - W|\\
+    &=\int dx\, dp\, P(x,p)\frac{|W_\theta(x,p) - W(x,p)|}{P(x,p)}\\
+    &\approx \frac{1}{N}\sum_{(x,p)\sim P}\frac{|W_\theta(x,p) - W(x,p)|}{P(x,p)}\\
+\end{align*} for any probability distribution $P$. Similarly, the (perhaps more important) gradient of the loss can be written as \begin{align*}
+    \nabla_\theta L_1[W_\theta,W] &= \int \text{sign}(W_\theta - W) \nabla_\theta W_\theta\\
+    &=\int dx\, dp\, P(x,p)\left[\frac{\text{sign}(W_\theta(x,p) - W(x,p))}{P(x,p)}\cdot \nabla_\theta W_\theta(x,p)\right]\\
+    &\approx \frac{1}{N}\sum_{(x,p)\sim P}\left[\frac{\text{sign}(W_\theta(x,p) - W(x,p))}{P(x,p)}\cdot \nabla_\theta W_\theta(x,p)\right].
+\end{align*} We now propose several options for $P$. \begin{enumerate}
+    \item If we choose to set $P = |\widetilde{W}_\theta|$, we get \begin{align*}
+        L_1[W_\theta,W] &\approx \frac{1}{N}\sum_{(x,p)\sim |\widetilde{W}_\theta|} \frac{|W_\theta(x,p) - W(x,p)|}{|\widetilde{W}_\theta(x,p)|}\\
+        &= \frac{Z_{W_\theta}}{N}\sum_{(x,p)\sim |\widetilde{W}_\theta|} \frac{|W_\theta(x,p) - W(x,p)|}{|W_\theta (x,p)|}\\
+        &= \frac{Z_{W_\theta}}{N}\sum_{(x,p)\sim |\widetilde{W}_\theta|} \left|1 - \frac{W(x,p)}{W_\theta (x,p)}\right|
+    \end{align*} and \begin{align*}
+        \nabla_\theta L_1[W_\theta,W] &\approx \frac{1}{N}\sum_{(x,p)\sim |\widetilde{W}_\theta|}\left[\frac{\text{sign}(W_\theta(x,p) - W(x,p))}{|\widetilde{W}_\theta(x,p)|}\cdot \nabla_\theta W_\theta(x,p)\right]\\
+        &= \frac{Z_{W_\theta}}{N}\sum_{(x,p)\sim |\widetilde{W}_\theta|}\left[\frac{\text{sign}(W_\theta(x,p) - W(x,p))}{|W_\theta(x,p)|}\cdot \nabla_\theta W_\theta(x,p)\right].
+    \end{align*} 
+    
+    For this option, we sample from $|W_\theta (x,p)|$ using MCMC methods. Because $Z_{W_\theta}$ factors out and only controls the magnitude of the gradient, we can in principle drop this term. This is especially true because in practice we use special optimizers such as Adam which rescale the gradients anyway. However, if we want to evaluate $Z_{W_\theta}$, we can do so through MCMC methods. We may wish to do so, because $Z_{W_\theta}$ can change as $W_\theta$ changes. It should, however, be bounded by $2\lambda + 1$.
+
+    \item If we choose to set $P = |\widetilde{W}|$, we get \begin{align*}
+        L_1[W_\theta,W] &\approx \frac{1}{N}\sum_{(x,p)\sim |\widetilde{W}|} \frac{|W_\theta(x,p) - W(x,p)|}{|\widetilde{W}|}\\
+        &= \frac{Z_{W}}{N}\sum_{(x,p)\sim |\widetilde{W}|} \frac{|W_\theta(x,p) - W(x,p)|}{|W(x,p)|}\\
+        &= \frac{Z_{W_\theta}}{N}\sum_{(x,p)\sim |\widetilde{W}|} \left|\frac{W_\theta (x,p)}{W(x,p)} - 1\right|
+    \end{align*} and \begin{align*}
+        \nabla_\theta L_1[W_\theta,W] &\approx \frac{1}{N}\sum_{(x,p)\sim |\widetilde{W}|}\left[\frac{\text{sign}(W_\theta(x,p) - W(x,p))}{|\widetilde{W}(x,p)|}\cdot \nabla_\theta W_\theta(x,p)\right]\\
+        &= \frac{Z_{W}}{N}\sum_{(x,p)\sim |\widetilde{W}|}\left[\frac{\text{sign}(W_\theta(x,p) - W(x,p))}{|W(x,p)|}\cdot \nabla_\theta W_\theta(x,p)\right].
+    \end{align*} Alternatively, in this case we can just use autodiff directly on $L_1[W_\theta,W]$ to compute $\nabla_\theta L_1[W_\theta,W]$. 
+    
+    For this option, we sample from $|W(x,p)|$ using MCMC methods. Because $Z_{W}$ factors out and only controls the magnitude of the gradient, we can drop this term. This is especially true because in practice we use special optimizers such as Adam which rescale the gradients anyway. However, if we want to evaluate $Z_{W_\theta}$, we can do so through MCMC methods.
+
+    \item If we choose to set $P = \frac{1}{2}(Q_{1\theta}+Q_{2\theta})$, we get \begin{align*}
+        L_1[W_\theta,W] &\approx \frac{1}{N}\sum_{(x,p)\sim \frac{1}{2}(Q_{1\theta}+Q_{2\theta})} \frac{|W_\theta(x,p) - W(x,p)|}{\frac{1}{2}(Q_{1\theta}+Q_{2\theta})}
+    \end{align*} and \begin{align*}
+        \nabla_\theta L_1[W_\theta,W] &\approx \frac{1}{N}\sum_{(x,p)\sim \frac{1}{2}(Q_{1\theta}+Q_{2\theta})}\left[\frac{\text{sign}(W_\theta(x,p) - W(x,p))}{\frac{1}{2}(Q_{1\theta}+Q_{2\theta})}\cdot \nabla_\theta W_\theta(x,p)\right].
+    \end{align*} This method does not require MCMC methods for sampling or evaluating $Z_W.$ However, it has the downside that the samples are not taken from either Wigner function, so each sample may provide less information than in the other proposals. In this case, we could once again differentiate straight through $L_1[W_\theta,W]$ using autodiff and the reparametrization trick.
+\end{enumerate}
+
+Another possible loss is the density matrix overlap $1-\text{tr}(\rho(W_\theta)\rho(W))$ where $\rho(\cdot)$ represents the density matrix for a given $W$. In terms of Wigner funtions, this can be written as \begin{align*}
+    1-\text{tr}(\rho(W_\theta)\rho(W)) &= 1-2\pi \int dx\, dp\, W_\theta(x,p)W(x,p)\\
+    &= 1-2\pi \int dx\, dp\, P(x,p)\frac{W_\theta(x,p)W(x,p)}{P(x,p)}\\
+    &\approx 1-\frac{2\pi}{N}\sum_{(x,p)\sim P}\frac{W_\theta(x,p)W(x,p)}{P(x,p)}.
+\end{align*} The gradient of this loss can be written as \begin{align*}
+    \nabla_\theta(1-\text{tr}(\rho(W_\theta)\rho(W))) &= -2\pi \int dx\, dp\, W(x,p) \nabla_\theta W_\theta(x,p)\\
+    &= -2\pi \int dx\, dp\, P(x,p)\frac{W(x,p)}{P(x,p)}\cdot \nabla_\theta W_\theta(x,p)\\
+    &\approx -\frac{2\pi}{N}\sum_{(x,p)\sim P}\frac{W(x,p)}{P(x,p)}\cdot \nabla_\theta W_\theta(x,p).
+\end{align*} We now propose several options for $P$. \begin{enumerate}
+    \item If we choose to set $P = |\widetilde{W}_\theta|$, we get \begin{align*}
+        1-\text{tr}(\rho(W_\theta)\rho(W)) &\approx 1-\frac{2\pi}{N}\sum_{(x,p)\sim |\widetilde{W}_\theta|}\frac{W_\theta(x,p)W(x,p)}{|\widetilde{W}_\theta(x,p)|}\\
+        &= 1-\frac{2\pi Z_{W_\theta}}{N}\sum_{(x,p)\sim |\widetilde{W}_\theta|} W(x,p)\cdot \text{sign}(W_\theta(x,p))
+    \end{align*} and \begin{align*}
+        \nabla_\theta (1-\text{tr}(\rho(W_\theta)\rho(W))) &\approx -\frac{2\pi}{N}\sum_{(x,p)\sim |\widetilde{W}_\theta|}\frac{W(x,p)}{|\widetilde{W}_\theta(x,p)|}\cdot \nabla_\theta W_\theta(x,p)\\
+        &= -\frac{2\pi Z_{W_\theta}}{N}\sum_{(x,p)\sim |\widetilde{W}_\theta|}\frac{W(x,p)}{|W_\theta(x,p)|}\cdot \nabla_\theta W_\theta(x,p).
+    \end{align*} 
+
+    \item If we choose to set $P = |\widetilde{W}|$, we get \begin{align*}
+        1-\text{tr}(\rho(W_\theta)\rho(W)) &\approx 1-\frac{2\pi}{N}\sum_{(x,p)\sim |\widetilde{W}|}\frac{W_\theta(x,p)W(x,p)}{|\widetilde{W}(x,p)|}\\
+        &= 1-\frac{2\pi Z_W}{N}\sum_{(x,p)\sim |\widetilde{W}|} W_\theta(x,p)\cdot \text{sign}(W(x,p))
+    \end{align*} and \begin{align*}
+        \nabla_\theta (1-\text{tr}(\rho(W_\theta)\rho(W))) &\approx -\frac{2\pi}{N}\sum_{(x,p)\sim |\widetilde{W}|}\frac{W(x,p)}{|\widetilde{W}(x,p)|}\cdot \nabla_\theta W_\theta(x,p)\\
+        &= -\frac{2\pi Z_W}{N}\sum_{(x,p)\sim |\widetilde{W}|} \text{sign}(W_\theta(x,p))\nabla_\theta W_\theta(x,p).
+    \end{align*}  Alternatively, in this case we can just use autodiff directly on $1-\text{tr}(\rho(W_\theta)\rho(W))$ to compute $\nabla_\theta (1-\text{tr}(\rho(W_\theta)\rho(W)))$.
+
+    \item If we choose to set $P = \frac{1}{2}(Q_{1\theta}+Q_{2\theta})$, we get \begin{align*}
+        1-\text{tr}(\rho(W_\theta)\rho(W)) &\approx 1-\frac{2\pi}{N}\sum_{(x,p)\sim \frac{1}{2}(Q_{1\theta}+Q_{2\theta})}\frac{W_\theta(x,p)W(x,p)}{\frac{1}{2}(Q_{1\theta}+Q_{2\theta})}
+    \end{align*} and \begin{align*}
+        \nabla_\theta (1-\text{tr}(\rho(W_\theta)\rho(W))) &\approx -\frac{2\pi}{N}\sum_{(x,p)\sim \frac{1}{2}(Q_{1\theta}+Q_{2\theta})}\frac{W(x,p)}{\frac{1}{2}(Q_{1\theta}+Q_{2\theta})}\cdot \nabla_\theta W_\theta(x,p).
+    \end{align*}  This method does not require MCMC methods for sampling or evaluating $Z_W$. However, it has the downside that the samples are not taken from either Wigner function, so each sample may provide less information than in the other proposals. In this case, we could once again differentiate straight through $\text{tr}(\rho(W_\theta)\rho(W))$ using autodiff and the reparametrization trick.
+\end{enumerate}
+
+\section{Approach 2}
+This approach is to learn $2\pi W^2$. This function has the nice property that it is a normalized probability density function: $\int 2\pi W^2 = 1$. We can thus fit $2\pi W^2$ directly using a Q-Flow $Q_\theta$. We can do this fitting using either a KL or L1 loss. At the same time, we must learn the sign of $W$. We can approximate this by a neural network with tanh as its final activation. We can train this neural network by taking samples from some distribution and optimizing the MSE loss\begin{equation*}
+    \frac{1}{N}\sum_{(x,p)} (NN_\theta(x,p)-\text{sign}(W(x,p)))^2.
+\end{equation*} Alternatively, we could use a modified Binary Cross Entropy loss \begin{align*}
+    -\frac{1}{N}\sum_{(x,p)} \Bigg[&\left(\frac{1+\text{sign}(W(x,p))}{2}\right)\log\left(\frac{1+NN_\theta(x,p)}{2}\right)\\
+    &+\left(1-\frac{1+\text{sign}(W(x,p))}{2}\right)\log\left(1-\frac{1+NN_\theta(x,p)}{2}\right)\Bigg].
+\end{align*} Our fitted $W$ can then be written as \begin{align*}
+    W_\theta(x,p) = NN_\theta(x,p)\sqrt{\frac{Q_\theta(x,p)}{2\pi}}.
+\end{align*} This will no longer satisfy the normalization requirements exactly, but if $NN_\theta$ is well-trained, it will be close to normalized.
+
+It may also be possible to train $W_\theta(x,p)$ using the density matrix overlap function as discussed in Approach 1.
+
+\section{Approach 3}
+This approach is to learn $|\widetilde{W}|$. Because $|\widetilde{W}|$ is also normalized, we can fit it with a Q-Flow $Q_\theta$. We can do this fitting using either a KL or L1 loss. For example, the KL loss would give \begin{align*}
+    KL &\approx \frac{1}{N}\sum_{(x,p)\sim Q_\theta}\log\left(\frac{Q_\theta(x,p)}{|\widetilde{W}(x,p)|}\right)\\
+    &= \frac{1}{N}\sum_{(x,p)\sim Q_\theta}\left[\log\left(\frac{Q_\theta(x,p)}{|W(x,p)|}\right)+\log Z_W\right].
+\end{align*} Similarly, the reverse KL divergence would give \begin{align*}
+    KL &\approx \frac{1}{N}\sum_{(x,p)\sim |\widetilde{W}(x,p)|}\log\left(\frac{|\widetilde{W}(x,p)|}{Q_\theta(x,p)}\right)\\
+    &= \frac{1}{N}\sum_{(x,p)\sim |\widetilde{W}(x,p)|}\left[\log\left(\frac{|W(x,p)|}{Q_\theta(x,p)}\right)-\log Z_W\right].
+\end{align*}Because we take gradients with respect to $\theta$, we can drop the $\log Z_W$ term in each of these expressions.
+
+At the same time, we must learn the sign of $W$. We can approximate this by a neural network with tanh as its final activation (see Approach 2 for more details).
+
+\end{document}
