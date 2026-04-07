@@ -114,6 +114,7 @@ def plot_Q(model, model_params, x_range, y_range, exact = None, exact_params = N
     
     fig.set_size_inches(3.5 * num_dims//2, 6)
 
+
     model_samples = None
     exact_samples = None
 
@@ -196,15 +197,20 @@ def compute_W_cumulatives(w_flow: Wigner, w_flow_params, num_dims, x_range, y_ra
             return probs_cross_sections
     
     elif num_dims == 2:
-        x = jnp.linspace(x_range[0],x_range[1],x_range[2])
-        y = jnp.linspace(y_range[0],y_range[1],y_range[2])
+
+        # Use arrange since x_range[2] is a step size like 0.3 and not an integer
+        x = jnp.arange(x_range[0], x_range[1] + x_range[2], x_range[2])
+        y = jnp.arange(y_range[0], y_range[1] + y_range[2], y_range[2])
 
         x,y = jnp.meshgrid(x,y)
 
         xFlat = x.flatten()
         yFlat = y.flatten()
 
-        ins = jnp.concatenate((jnp.expand_dims(xFlat,axis=1),jnp.expand_dims(yFlat,axis=1)),axis=1)
+        ins = jnp.concatenate(
+            (jnp.expand_dims(xFlat,axis=1),
+             jnp.expand_dims(yFlat,axis=1)),
+             axis=1)
 
         key = PRNGKey(0)
         if isinstance(w_flow, W_Tensor_Product):
@@ -220,9 +226,12 @@ def compute_W_cumulatives(w_flow: Wigner, w_flow_params, num_dims, x_range, y_ra
         return [w_values.reshape(x.shape)]
     
     else:
-        x = jnp.linspace(x_range[0],x_range[1],x_range[2])
-        x = (x[:-1] + x[1:])/2
-        y = jnp.linspace(y_range[0],y_range[1],y_range[2])
+        # Use arrange since x_range[2] is a step size like 0.3 and not an integer
+        x = jnp.arange(x_range[0],x_range[1],x_range[2])
+        x = (x[:-1] + x[1:]) / 2
+
+        # Use arrange since y_range[2] is a step size like 0.3 and not an integer
+        y = jnp.arange(y_range[0],y_range[1],y_range[2])
         y = (y[:-1] + y[1:])/2
 
         x,y = jnp.meshgrid(x,y)
@@ -238,7 +247,9 @@ def compute_W_cumulatives(w_flow: Wigner, w_flow_params, num_dims, x_range, y_ra
 
         for w_flow_slice, w_flow_params_slice in zip(w_flow.Ws, w_flow_params):
             key,subkey = split(key)
-            w_values.append(w_flow_slice.w(w_flow_params_slice, ins, subkey).reshape(x_range[2]-1, y_range[2]-1))
+
+            # Reshape the output of w to be the same shape as x and y for plotting, use x.shape since x_range[2] was not integer
+            w_values.append(w_flow_slice.w(w_flow_params_slice, ins, subkey).reshape(x.shape))
 
         return w_values
 
