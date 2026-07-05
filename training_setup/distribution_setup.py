@@ -126,6 +126,12 @@ def distribution_name_init(filename, kwargs):
     elif problem == "binom_1":
         filename += "_binom_1"
 
+    elif problem == "5_W":
+        filename += "_5_W"
+    
+    elif problem == "10_W":
+        filename += "_10_W"
+
     if kwargs["noise"] != 0:
         filename += f"_noise={kwargs['noise']:0.2f}"
 
@@ -409,17 +415,67 @@ def W_distribution_init(kwargs):
 
         plot_range = [(-7,7,0.1),(-7,7,0.1)]
 
-    elif problem == "all3":
-        distribution1 = W_CatState(1,1.5,2)
-        distribution2 = W_n_particle(2)
+    elif problem == "10_W":
+
         distribution3 = W_Num(0)
 
-        distribution4 = W_Rotation(W_CatState(1,1,2), rotation = jnp.array([[0,1],[1,0]]))
+        distribution = W_Tensor_Product([
+            distribution3,
+            distribution3,
+            distribution3
+            #distribution3
+            # distribution3
+        ])
+
+        plot_range = [(-5,5,0.1),(-5,5,0.1)]
+
+    elif problem == "5_W":
+
+        theta_swap = jnp.array([[0, 1], [1, 0]])
+        theta = -1 * (jnp.pi / 2)
+
+        rotation_45_cw = jnp.array([
+            [jnp.cos(theta), -jnp.sin(theta)],
+            [jnp.sin(theta),  jnp.cos(theta)],
+        ])
+
+        distribution1 = W_Rotation(W_CatState(1, 1.5, 2), rotation=theta_swap)
+        distribution2 = W_n_particle(1)
+        distribution3 = W_Num(0)
+        distribution4 = W_CatState(1, 1, 2)
+        distribution5 = W_n_particle(2)
+
+        distribution = W_Tensor_Product([
+            distribution1,
+            distribution2,
+            distribution3,
+            distribution4,
+            #distribution5,
+        ])
+
+    elif problem == "all3":
+
+        distribution1 = W_CatState(1,1.5,2)
+        distribution2 = W_n_particle(2)
+
+        # theta = -1 * (2 * jnp.pi / 4)
+
+        # rotation_45_cw = jnp.array([
+        #     [jnp.cos(theta), -jnp.sin(theta)],
+        #     [jnp.sin(theta),  jnp.cos(theta)],
+        # ])
+
+        distribution3 = W_Num(0)
+        
+        #W_Rotation(W_Num(0), rotation=rotation_45_cw)
+
+        # distribution4 = W_Rotation(W_CatState(1,1,2), rotation = jnp.array([[0,1],[1,0]]))
+
         # distribution5 = W_Num(1)
 
-        distribution = W_Tensor_Product([distribution1])#, distribution2])#, distribution3, distribution4])#, distribution5])
+        distribution = W_Tensor_Product([distribution1, distribution2, distribution3])
 
-        plot_range = [(-5,5,50),(-5,5,50)]
+        plot_range = [(-5,5,0.1),(-5,5,0.1)]
 
     if problem == "QST_CGAN_W_Neg":
         distribution = None
