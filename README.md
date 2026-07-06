@@ -1,17 +1,4 @@
-The main code path is:
-
-`main.py`  
-→ `parse_args.py`  
-→ `training_setup/*`  
-→ `training.py` or `training_sampler.py`  
-→ `Q_flows/*`, `distributions/*`, `losses/*`  
-→ `plotting.py` / `flow_IO.py`
-
-That is the core stack you need in your VS Code folder if your goal is to run the experiments described in the paper.
-
----
-
-## 2. Top-level Python files
+## 1. Top-level Python files
 
 ### `main.py`
 This is the main command-line entrypoint for the whole project. It reads the command-line flags, decides which representation and target problem to run, builds the requested flow model, and launches training.
