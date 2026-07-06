@@ -323,7 +323,7 @@ If you are on a cluster, the shell scripts in `scripts/final/` are the most conv
 
 ---
 
-## 14. Final summary
+## 10. Final summary
 
 The repository is built around a clean separation of concerns:
 - `main.py` handles experiment entry,
