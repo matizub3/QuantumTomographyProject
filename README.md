@@ -47,7 +47,7 @@ Use this when you want to quantify scaling behavior rather than just train a sin
 
 ---
 
-## 3. Flow model code (`Q_flows/`)
+## 2. Flow model code (`Q_flows/`)
 
 ### `Q_flows/continuous.py`
 This file contains the implementation of the continuous normalizing flow itself. It defines how a base distribution is pushed through an ODE-defined transformation to produce the learned distribution in phase space.
@@ -61,7 +61,7 @@ You can think of it as the support code that makes the main continuous flow impl
 
 ---
 
-## 4. Distribution and target-state code (`distributions/`)
+## 3. Distribution and target-state code (`distributions/`)
 
 ### `distributions/distribution.py`
 This file provides shared abstractions or base behavior for target distributions. It defines the interface that concrete Q-function and Wigner-function targets are expected to satisfy.
@@ -95,7 +95,7 @@ The separation between `Q_targets.py` and `W_targets.py` keeps representation-sp
 
 ---
 
-## 5. Loss code (`losses/`)
+## 4. Loss code (`losses/`)
 
 ### `losses/base_loss.py`
 This file provides shared loss infrastructure. It defines the interface and common behavior used by specific Q and W loss implementations.
@@ -129,7 +129,7 @@ Because the Wigner function can be oscillatory and sign-changing, a direct recon
 
 ---
 
-## 6. Training setup code (`training_setup/`)
+## 5. Training setup code (`training_setup/`)
 
 ### `training_setup/setup.py`
 This file is the high-level setup dispatcher. It takes parsed arguments and assembles the full experiment configuration: target distribution, flow architecture, optimizer/loss pair, plotting schedule, and other settings.
@@ -154,7 +154,7 @@ This separation keeps `training.py` cleaner, because the training loop only has 
 ---
 
 
-## 8. Primary run scripts (`scripts/final/`)
+## 6. Primary run scripts (`scripts/final/`)
 
 ### `scripts/final/Q_1_well.sh`
 This shell script launches the one-well Q-flow experiments for the standard benchmark states. It is essentially a batch wrapper around several `python main.py ...` commands.
@@ -179,7 +179,7 @@ This script launches a larger multi-well or multi-number-state experiment, such 
 
 ---
 
-## 10. Losses and evaluation metrics used in the code
+## 7. Losses and evaluation metrics used in the code
 
 The repository supports more than one loss, but the paper-facing code path is easiest to understand if you separate **training objective** from **evaluation metric**.
 
@@ -216,7 +216,7 @@ A good mental model is:
 
 ---
 
-## 11. Thorough explanation of the main training loop
+## 8. Thorough explanation of the main training loop
 
 This section explains what `training.py` / `training_sampler.py` are doing conceptually.
 
@@ -305,7 +305,7 @@ That is the central algorithmic loop behind the repository.
 ---
 
 
-## 13. How to run the code
+## 9. How to run the code
 
 Open a terminal in the repository root and activate your environment. Then start with one of the paper-style commands.
 
